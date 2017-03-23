@@ -5,6 +5,7 @@ defmodule Slacklog.Slack.RTM do
   ### Examples
   
       iex> Slack.Bot.start_link(Slacklog.Slack.RTM, [], Application.get_env(:slacklog, :key))
+      {:ok, #PID<0.246.0>}
   
   """
 
@@ -98,6 +99,11 @@ defmodule Slacklog.Slack.RTM do
     IO.inspect event
     {:ok, state}
   end
+
+  @doc """
+  Do nothing for events we don't care about.
+  """
+  def handle_event(_event, _slack, state), do: {:ok, state}
 
   @doc """
   Send a message or something.

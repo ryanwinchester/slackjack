@@ -4,12 +4,13 @@ defmodule Slackjack.Bot do
 
   ### Examples
 
-      iex> Slack.Bot.start_link(Slackjack.Bot, [], Application.get_env(:slackjack, :key))
-      {:ok, #PID<0.246.0>}
+      iex> {:ok, pid} = Slack.Bot.start_link(Slackjack.Bot, [], Application.get_env(:slackjack, :key))
 
   """
 
   use Slack
+
+  alias Slackjack.Logs.User
 
   @doc """
   Start the bot connection to slack.
@@ -47,6 +48,15 @@ defmodule Slackjack.Bot do
   end
 
   @doc """
+  A team member left the channel.
+  see: https://api.slack.com/events/channel_leave
+  """
+  def handle_event(event = %{subtype: "channel_leave"}, _slack, state) do
+    IO.inspect event
+    {:ok, state}
+  end
+
+  @doc """
   A channel was renamed.
   see: https://api.slack.com/events/channel_rename
   """
@@ -65,10 +75,31 @@ defmodule Slackjack.Bot do
   end
 
   @doc """
+  A message was edited.
+  see: https://api.slack.com/events/message
+  """
+  def handle_event(event = %{subtype: "message_changed"}, _slack, state) do
+    IO.inspect event
+    _channel = event.channel
+    {:ok, state}
+  end
+
+  @doc """
+  A message was deleted from a channel.
+  see: https://api.slack.com/events/message
+  """
+  def handle_event(event = %{subtype: "message_deleted"}, _slack, state) do
+    IO.inspect event
+    _channel = event.channel
+    {:ok, state}
+  end
+
+  @doc """
   A message was sent to a channel.
   see: https://api.slack.com/events/message
   """
   def handle_event(event = %{type: "message"}, _slack, state) do
+    IO.inspect event
     _channel = event.channel
     {:ok, state}
   end
@@ -92,12 +123,26 @@ defmodule Slackjack.Bot do
   end
 
   @doc """
+  A new team member joined.
+  see: https://api.slack.com/events/team_join
+  """
+  def handle_event(event = %{type: "team_join"}, _slack, state) do
+    IO.inspect event
+    {:ok, state}
+  end
+
+  @doc """
   A team member's data has changed.
   see: https://api.slack.com/events/user_change
   """
   def handle_event(event = %{type: "user_change"}, _slack, state) do
     IO.inspect event
-    {:ok, state}
+    case User.changed(event) do
+      {:ok} -> {:ok, state}
+      {:error, reason} ->
+        send_message(reason, event.channel, slack)
+        {:ok, state}
+    end
   end
 
   @doc """

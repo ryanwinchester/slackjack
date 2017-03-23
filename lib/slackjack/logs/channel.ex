@@ -10,4 +10,12 @@ defmodule Slackjack.Logs.Channel do
     timestamps()
   end
 
+  def created(event) do
+    # TODO
+  end
+
+  def archived(event) do
+    # TODO
+  end
+
 end

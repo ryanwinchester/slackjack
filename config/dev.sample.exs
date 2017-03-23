@@ -7,3 +7,5 @@ config :slacklog, Slacklog.Repo,
   password: "postgres",
   hostname: "localhost",
   pool_size: 10
+
+config :slacklog, key: "slack_api_key"

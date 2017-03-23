@@ -1,4 +1,4 @@
-defmodule Slacklog.Repo.Migrations.CreateUser do
+defmodule Slackjack.Repo.Migrations.CreateUser do
   use Ecto.Migration
 
   def change do

@@ -1,8 +1,8 @@
-defmodule Slacklog.Logs.User do
+defmodule Slackjack.Logs.User do
   use Ecto.Schema
 
   @primary_key {:id, :string, []}
-  
+
   schema "users" do
     field :email, :string
     field :name, :string
@@ -13,8 +13,8 @@ defmodule Slacklog.Logs.User do
     field :is_restricted, :boolean
     field :is_ultra_restricted, :boolean
 
-    many_to_many :channels, Slacklog.Logs.Channel, join_through: "channels_users"
-    has_many :messages, Slacklog.Logs.Message
+    many_to_many :channels, Slackjack.Logs.Channel, join_through: "channels_users"
+    has_many :messages, Slackjack.Logs.Message
 
     timestamps()
   end

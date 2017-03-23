@@ -1,12 +1,12 @@
-defmodule Slacklog.Slack.RTM do
+defmodule Slackjack.Bot do
   @moduledoc """
   Get the events we want from slack.
-  
+
   ### Examples
-  
-      iex> Slack.Bot.start_link(Slacklog.Slack.RTM, [], Application.get_env(:slacklog, :key))
+
+      iex> Slack.Bot.start_link(Slackjack.Bot, [], Application.get_env(:slackjack, :key))
       {:ok, #PID<0.246.0>}
-  
+
   """
 
   use Slack
@@ -72,7 +72,7 @@ defmodule Slacklog.Slack.RTM do
     _channel = event.channel
     {:ok, state}
   end
-  
+
   @doc """
   A pin was added to a channel.
   see: https://api.slack.com/events/pin_added

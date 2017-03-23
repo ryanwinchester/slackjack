@@ -1,6 +1,6 @@
-defmodule SlacklogTest do
+defmodule SlackjackTest do
   use ExUnit.Case
-  doctest Slacklog
+  doctest Slackjack
 
   test "the truth" do
     assert 1 + 1 == 2

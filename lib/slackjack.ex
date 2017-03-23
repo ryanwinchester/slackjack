@@ -1,6 +1,6 @@
-defmodule Slacklog do
+defmodule Slackjack do
   @moduledoc """
-  Documentation for Slacklog.
+  Documentation for Slackjack.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Slacklog do
 
   ## Examples
 
-      iex> Slacklog.hello
+      iex> Slackjack.hello
       :world
 
   """

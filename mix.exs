@@ -1,8 +1,8 @@
-defmodule Slacklog.Mixfile do
+defmodule Slackjack.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :slacklog,
+    [app: :slackjack,
      version: "0.1.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
@@ -16,7 +16,7 @@ defmodule Slacklog.Mixfile do
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [:logger, :postgrex, :ecto, :slack],
-     mod: {Slacklog.Application, []}]
+     mod: {Slackjack.Application, []}]
   end
 
   # Dependencies can be Hex packages:

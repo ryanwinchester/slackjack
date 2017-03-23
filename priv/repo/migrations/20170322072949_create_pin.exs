@@ -1,4 +1,4 @@
-defmodule Slacklog.Repo.Migrations.CreatePin do
+defmodule Slackjack.Repo.Migrations.CreatePin do
   use Ecto.Migration
 
   def change do

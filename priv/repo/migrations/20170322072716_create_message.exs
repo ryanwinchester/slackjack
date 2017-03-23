@@ -1,4 +1,4 @@
-defmodule Slacklog.Repo.Migrations.CreateMessage do
+defmodule Slackjack.Repo.Migrations.CreateMessage do
   use Ecto.Migration
 
   def change do
@@ -13,6 +13,6 @@ defmodule Slacklog.Repo.Migrations.CreateMessage do
     end
 
     create index(:messages, [:channel_id])
-    
+
   end
 end

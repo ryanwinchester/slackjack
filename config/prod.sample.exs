@@ -1,11 +1,11 @@
 use Mix.Config
 
-config :slacklog, Slacklog.Repo,
+config :slackjack, Slackjack.Repo,
   adapter: Ecto.Adapters.Postgres,
-  database: "slacklog_prod",
+  database: "slackjack_prod",
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
   pool_size: 20
 
-config :slacklog, key: "slack_api_key"
+config :slackjack, key: "slack_api_key"

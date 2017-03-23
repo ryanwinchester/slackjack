@@ -10,18 +10,18 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :slacklog, key: :value
+#     config :slackjack, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:slacklog, :key)
+#     Application.get_env(:slackjack, :key)
 #
 # Or configure a 3rd-party app:
 #
 #     config :logger, level: :info
 #
 
-config :slacklog, ecto_repos: [Slacklog.Repo]
+config :slackjack, ecto_repos: [Slackjack.Repo]
 
 
 # It is also possible to import configuration files, relative to this

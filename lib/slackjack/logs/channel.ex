@@ -6,16 +6,7 @@ defmodule Slackjack.Logs.Channel do
   schema "channels" do
     has_many :messages, Slackjack.Logs.Message
     has_many :pins, Slackjack.Logs.Pin
-
     timestamps()
-  end
-
-  def created(event) do
-    # TODO
-  end
-
-  def archived(event) do
-    # TODO
   end
 
 end

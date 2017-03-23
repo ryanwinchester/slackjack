@@ -10,7 +10,11 @@ defmodule Slackjack.Bot do
 
   use Slack
 
-  alias Slackjack.Logs.User
+  alias Slackjack.Logs.Message
+  alias Slackjack.Repo
+  alias Slackjack.Logs.User  
+
+  @test_channel Application.get_env(:slackjack, :test_channel)
 
   @doc """
   Start the bot connection to slack.
@@ -78,30 +82,48 @@ defmodule Slackjack.Bot do
   A message was edited.
   see: https://api.slack.com/events/message
   """
-  def handle_event(event = %{subtype: "message_changed"}, _slack, state) do
-    IO.inspect event
-    _channel = event.channel
-    {:ok, state}
+  def handle_event(%{subtype: "message_changed", message: message}, slack, state) do
+    changeset =
+      Message
+      |> Repo.get(message.id)
+      |> Message.changeset(message)
+    
+    case Repo.update(changeset) do
+      {:ok, _message} -> {:ok, state}
+      {:error, _changeset} ->
+        send_message("There was an error updating DB.", @test_channel, slack)
+        {:ok, state}
+    end
   end
 
   @doc """
   A message was deleted from a channel.
   see: https://api.slack.com/events/message
   """
-  def handle_event(event = %{subtype: "message_deleted"}, _slack, state) do
-    IO.inspect event
-    _channel = event.channel
-    {:ok, state}
+  def handle_event(%{subtype: "message_deleted", message: message}, slack, state) do
+    message = Repo.get(Message, message.id)
+    
+    case Repo.delete(message) do
+      {:ok, _message} -> {:ok, state}
+      {:error, _changeset} ->
+        send_message("There was an error deleting from the DB.", @test_channel, slack)
+        {:ok, state}
+    end
   end
 
   @doc """
   A message was sent to a channel.
   see: https://api.slack.com/events/message
   """
-  def handle_event(event = %{type: "message"}, _slack, state) do
-    IO.inspect event
-    _channel = event.channel
-    {:ok, state}
+  def handle_event(%{type: "message", message: message}, slack, state) do
+    changeset = Message.changeset(%Message{}, message)
+    
+    case Repo.insert(changeset) do
+      {:ok, _message} -> {:ok, state}
+      {:error, _changeset} ->
+        send_message("There was an error inserting into DB.", @test_channel, slack)
+        {:ok, state}
+    end
   end
 
   @doc """
@@ -135,12 +157,16 @@ defmodule Slackjack.Bot do
   A team member's data has changed.
   see: https://api.slack.com/events/user_change
   """
-  def handle_event(event = %{type: "user_change"}, _slack, state) do
-    IO.inspect event
-    case User.changed(event) do
-      {:ok} -> {:ok, state}
-      {:error, reason} ->
-        send_message(reason, event.channel, slack)
+  def handle_event(%{type: "user_change", user: user}, slack, state) do
+    changeset =
+      User
+      |> Repo.get(user.id)
+      |> User.changeset(user)
+    
+    case Repo.update(changeset) do
+      {:ok, _user} -> {:ok, state}
+      {:error, _changeset} ->
+        send_message("There was an error updating DB.", @test_channel, slack)
         {:ok, state}
     end
   end

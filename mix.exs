@@ -15,7 +15,7 @@ defmodule Slackjack.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger, :postgrex, :ecto, :slack],
+    [extra_applications: [:logger],
      mod: {Slackjack.Application, []}]
   end
 
@@ -31,6 +31,7 @@ defmodule Slackjack.Mixfile do
   defp deps do
     [{:postgrex, ">= 0.0.0"},
      {:ecto, "~> 2.1"},
+     {:distillery, "~> 1.0", runtime: false},
      {:slack, "~> 0.11.0"}]
   end
 end

@@ -15,7 +15,7 @@ defmodule Slackjack.Application do
       # Starts a worker by calling: Slackjack.Worker.start_link(arg1, arg2, arg3)
       # worker(Slackjack.Worker, [arg1, arg2, arg3]),
       supervisor(Slackjack.Repo, []),
-      worker(Slack.Bot, [Slackjack.Bot, [], @slack_token], restart: :transient),
+      worker(Slack.Bot, [Slackjack.Bot, [], @slack_token], restart: :permanent),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

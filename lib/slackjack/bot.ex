@@ -32,7 +32,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/channel_archive
   """
   def handle_event(event = %{type: "channel_archive"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -41,7 +41,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/channel_created
   """
   def handle_event(event = %{type: "channel_created"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -50,7 +50,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/channel_deleted
   """
   def handle_event(event = %{type: "channel_deleted"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -59,7 +59,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/channel_leave
   """
   def handle_event(event = %{subtype: "channel_leave"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -68,7 +68,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/channel_rename
   """
   def handle_event(event = %{type: "channel_rename"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -77,7 +77,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/channel_unarchive
   """
   def handle_event(event = %{type: "channel_unarchive"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -122,7 +122,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/message
   """
   def handle_event(message = %{type: "message", channel: "C" <> _}, slack, state) do
-    IO.inspect message
+    # IO.inspect message
     changeset = Message.changeset(%Message{}, message)
     
     case Repo.insert(changeset) do
@@ -136,7 +136,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/pin_added
   """
   def handle_event(event = %{type: "pin_added"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -145,7 +145,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/pin_removed
   """
   def handle_event(event = %{type: "pin_removed"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -154,7 +154,7 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/team_join
   """
   def handle_event(event = %{type: "team_join"}, _slack, state) do
-    IO.inspect event
+    # IO.inspect event
     {:ok, state}
   end
 
@@ -190,13 +190,10 @@ defmodule Slackjack.Bot do
   def handle_info(_, _, state), do: {:ok, state}
 
   defp send_success(_resource, slack, state) do
-    IO.puts "ಠ_ಠ"
-    send_message("ಠ_ಠ", @test_channel, slack)
     {:ok, state}
   end
 
   defp send_error(changeset, slack, state) do
-    IO.inspect changeset
     errors = errors_to_string(changeset)
     send_message(errors, @test_channel, slack)
     {:ok, state}

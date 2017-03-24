@@ -10,8 +10,8 @@ defmodule Slackjack.Logs.Message do
 
   schema "messages" do
     field :text, :string
-    belongs_to :channel, Slackjack.Logs.Channel, type: :string
-    belongs_to :user, Slackjack.Logs.User, type: :string
+    belongs_to :channel, Slackjack.Logs.Channel, type: :string, on_replace: :update
+    belongs_to :user, Slackjack.Logs.User, type: :string, on_replace: :update
     has_one :pin, Slackjack.Logs.Pin
     timestamps()
   end

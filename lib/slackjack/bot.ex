@@ -84,7 +84,7 @@ defmodule Slackjack.Bot do
   @doc """
   Ignore message edit attachments.
   """
-  def handle_event(%{subtype: "message_changed", message: %{attachments: attachments}}, _slack, state) do
+  def handle_event(%{subtype: "message_changed", message: %{attachments: _attachments}}, _slack, state) do
     {:ok, state}
   end
 

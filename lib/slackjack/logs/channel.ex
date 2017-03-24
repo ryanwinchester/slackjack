@@ -4,7 +4,7 @@ defmodule Slackjack.Logs.Channel do
   import Ecto.Changeset
 
   @required_fields ~w(id name name_normalized)a
-  @optional_fields ~w(is_org_shared is_shared)a
+  @optional_fields ~w()a
 
   @primary_key {:id, :string, []}
 

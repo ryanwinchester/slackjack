@@ -89,10 +89,8 @@ defmodule Slackjack.Bot do
       |> Message.changeset(message)
     
     case Repo.update(changeset) do
-      {:ok, _message} -> {:ok, state}
-      {:error, _changeset} ->
-        send_message("There was an error updating DB.", @test_channel, slack)
-        {:ok, state}
+      {:ok, message} -> send_success(message, slack, state)
+      {:error, changeset} -> send_error(changeset, slack, state)
     end
   end
 
@@ -104,10 +102,8 @@ defmodule Slackjack.Bot do
     message = Repo.get(Message, message.id)
     
     case Repo.delete(message) do
-      {:ok, _message} -> {:ok, state}
-      {:error, _changeset} ->
-        send_message("There was an error deleting from the DB.", @test_channel, slack)
-        {:ok, state}
+      {:ok, message} -> send_success(message, slack, state)
+      {:error, changeset} -> send_error(changeset, slack, state)
     end
   end
 
@@ -119,10 +115,8 @@ defmodule Slackjack.Bot do
     changeset = Message.changeset(%Message{}, message)
     
     case Repo.insert(changeset) do
-      {:ok, _message} -> {:ok, state}
-      {:error, _changeset} ->
-        send_message("There was an error inserting into DB.", @test_channel, slack)
-        {:ok, state}
+      {:ok, message} -> send_success(message, slack, state)
+      {:error, changeset} -> send_error(changeset, slack, state)
     end
   end
 
@@ -164,10 +158,8 @@ defmodule Slackjack.Bot do
       |> User.changeset(user)
     
     case Repo.update(changeset) do
-      {:ok, _user} -> {:ok, state}
-      {:error, _changeset} ->
-        send_message("There was an error updating DB.", @test_channel, slack)
-        {:ok, state}
+      {:ok, user} -> send_success(user, slack, state)
+      {:error, changeset} -> send_error(changeset, slack, state)
     end
   end
 
@@ -185,5 +177,14 @@ defmodule Slackjack.Bot do
     {:ok, state}
   end
   def handle_info(_, _, state), do: {:ok, state}
+
+  defp send_success(_resource, _slack, state) do
+    {:ok, state}
+  end
+
+  defp send_error(_changeset, slack, state) do
+    send_message("DB problem", @test_channel, slack)
+    {:ok, state}
+  end
 
 end

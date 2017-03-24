@@ -10,9 +10,10 @@ defmodule Slackjack.Bot do
 
   use Slack
 
+  alias Slackjack.Logs.Channel
   alias Slackjack.Logs.Message
-  alias Slackjack.Repo
   alias Slackjack.Logs.User  
+  alias Slackjack.Repo
 
   @test_channel Application.get_env(:slackjack, :test_channel)
 
@@ -21,6 +22,8 @@ defmodule Slackjack.Bot do
   """
   def handle_connect(slack, state) do
     IO.puts "Connected as #{slack.me.name}"
+    update_channels()
+    update_users()
     {:ok, state}
   end
 
@@ -79,10 +82,17 @@ defmodule Slackjack.Bot do
   end
 
   @doc """
+  Ignore message edit attachments.
+  """
+  def handle_event(%{subtype: "message_changed", message: %{attachments: attachments}}, _slack, state) do
+    {:ok, state}
+  end
+
+  @doc """
   A message was edited.
   see: https://api.slack.com/events/message
   """
-  def handle_event(%{subtype: "message_changed", message: message}, slack, state) do
+  def handle_event(message = %{subtype: "message_changed", channel: "C" <> _}, slack, state) do
     changeset =
       Message
       |> Repo.get(message.id)
@@ -98,7 +108,7 @@ defmodule Slackjack.Bot do
   A message was deleted from a channel.
   see: https://api.slack.com/events/message
   """
-  def handle_event(%{subtype: "message_deleted", message: message}, slack, state) do
+  def handle_event(message = %{subtype: "message_deleted", channel: "C" <> _}, slack, state) do
     message = Repo.get(Message, message.id)
     
     case Repo.delete(message) do
@@ -111,7 +121,8 @@ defmodule Slackjack.Bot do
   A message was sent to a channel.
   see: https://api.slack.com/events/message
   """
-  def handle_event(%{type: "message", message: message}, slack, state) do
+  def handle_event(message = %{type: "message", channel: "C" <> _}, slack, state) do
+    IO.inspect message
     changeset = Message.changeset(%Message{}, message)
     
     case Repo.insert(changeset) do
@@ -178,13 +189,71 @@ defmodule Slackjack.Bot do
   end
   def handle_info(_, _, state), do: {:ok, state}
 
-  defp send_success(_resource, _slack, state) do
+  defp send_success(_resource, slack, state) do
+    IO.puts "ಠ_ಠ"
+    send_message("ಠ_ಠ", @test_channel, slack)
     {:ok, state}
   end
 
-  defp send_error(_changeset, slack, state) do
-    send_message("DB problem", @test_channel, slack)
+  defp send_error(changeset, slack, state) do
+    IO.inspect changeset
+    errors = errors_to_string(changeset)
+    send_message(errors, @test_channel, slack)
     {:ok, state}
+  end
+
+  defp errors_to_string(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
+    |> Enum.map(fn {field, errors} ->
+      "`#{to_string(field)}`: " <> Enum.join(errors, ", ")
+    end)
+    |> Enum.join("\n")
+  end
+
+  defp update_channels() do
+    slack_channels = Slack.Web.Channels.list()
+
+    Enum.map(slack_channels["channels"], fn slack_channel ->
+      slack_channel =
+       slack_channel
+       |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+       |> Enum.into(%{})
+
+      channel = Repo.get(Channel, slack_channel.id)
+
+      changeset =
+        case channel do
+          nil -> Channel.changeset(%Channel{}, slack_channel)
+          _ -> Channel.changeset(channel, slack_channel)
+        end
+        
+      Repo.insert_or_update!(changeset)
+    end)
+  end
+
+  defp update_users() do
+    slack_users = Slack.Web.Users.list()
+
+    Enum.map(slack_users["members"], fn slack_user ->
+      slack_user =
+       slack_user
+       |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+       |> Enum.into(%{})
+
+      user = Repo.get(User, slack_user.id)
+
+      changeset =
+        case user do
+          nil -> User.changeset(%User{}, slack_user)
+          _ -> User.changeset(user, slack_user)
+        end
+        
+      Repo.insert_or_update!(changeset)
+    end)
   end
 
 end

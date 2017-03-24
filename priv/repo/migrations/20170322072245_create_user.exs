@@ -9,7 +9,6 @@ defmodule Slackjack.Repo.Migrations.CreateUser do
       add :status, :string
       add :color, :string
       add :deleted, :boolean
-      add :id, :boolean
       add :is_admin, :boolean
       add :is_bot, :boolean
       add :is_owner, :boolean
@@ -21,7 +20,6 @@ defmodule Slackjack.Repo.Migrations.CreateUser do
       add :tz_label, :string
       add :tz_offset, :integer
       add :profile, :jsonb
-
       timestamps()
     end
   end

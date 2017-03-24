@@ -31,6 +31,7 @@ defmodule Slackjack.Mixfile do
   defp deps do
     [{:postgrex, ">= 0.0.0"},
      {:ecto, "~> 2.1"},
+     {:poison, "~> 3.0"},
      {:distillery, "~> 1.0", runtime: false},
      {:slack, "~> 0.11.0"}]
   end

@@ -3,7 +3,7 @@ defmodule Slackjack.Logs.User do
 
   import Ecto.Changeset
 
-  @required_fields ~w(name)a
+  @required_fields ~w(id name)a
   @optional_fields ~w(real_name status color deleted id is_admin is_bot is_owner
     is_primary_owner is_restricted is_ultra_restricted team_id tz tz_label tz_offset)a
 
@@ -25,7 +25,7 @@ defmodule Slackjack.Logs.User do
     field :tz, :string
     field :tz_label, :string
     field :tz_offset, :integer
-    embeds_one :profile, Slackjack.Logs.Profile
+    embeds_one :profile, Slackjack.Logs.Profile, on_replace: :update
     many_to_many :channels, Slackjack.Logs.Channel, join_through: "channels_users"
     has_many :messages, Slackjack.Logs.Message
     timestamps()

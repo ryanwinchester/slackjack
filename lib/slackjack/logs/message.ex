@@ -3,7 +3,7 @@ defmodule Slackjack.Logs.Message do
 
   import Ecto.Changeset
 
-  @required_fields ~w(text)a
+  @required_fields ~w(id text)a
   @optional_fields ~w(channel_id user_id)a
 
   @primary_key {:id, :string, []}
@@ -18,13 +18,13 @@ defmodule Slackjack.Logs.Message do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(add_ids(params), @required_fields ++ @optional_fields)
+    |> cast(params, @required_fields ++ @optional_fields)
+    |> put_change(:id, params.ts)
+    |> put_change(:channel_id, params.channel)
+    |> put_change(:user_id, params.user)
     |> validate_required(@required_fields)
-  end
-
-  defp add_ids(params) do
-    %{user_id: Map.get(params, :user),
-      channel_id: Map.get(params, :channel)}
+    |> foreign_key_constraint(:channel_id)
+    |> foreign_key_constraint(:user_id)
   end
 
 end

@@ -5,6 +5,8 @@ defmodule Slackjack.Application do
 
   use Application
 
+  @slack_token Application.get_env(:slack, :api_token)
+
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
@@ -13,7 +15,7 @@ defmodule Slackjack.Application do
       # Starts a worker by calling: Slackjack.Worker.start_link(arg1, arg2, arg3)
       # worker(Slackjack.Worker, [arg1, arg2, arg3]),
       supervisor(Slackjack.Repo, []),
-      worker(Slack.Bot, [Slackjack.Bot, [], Application.get_env(:slack, :api_token)]),
+      worker(Slack.Bot, [Slackjack.Bot, [], @slack_token], restart: :transient),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

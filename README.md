@@ -1,24 +1,16 @@
 # Slackjack
 
-**TODO: Add description**
+Log all the non-private channels that your bot user is in.
 
-## Installation
+## Setup
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `slackjack` to your list of dependencies in `mix.exs`:
+#### In your project directory
 
-```elixir
-def deps do
-  [{:slackjack, "~> 0.1.0"}]
-end
-```
-
-## Development
-
-- `cp config/dev.sample.exs config/dev.exs`
+- run `mix deps.get`
+- copy sample configs, like `cp config/dev.sample.exs config/dev.exs`
 - edit `config/dev.exs` to suit
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/slackjack](https://hexdocs.pm/slackjack).
+#### In slack team settings
 
+- Add a bot user
+- Add the api token to your config

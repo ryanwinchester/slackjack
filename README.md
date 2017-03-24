@@ -13,7 +13,10 @@ def deps do
 end
 ```
 
-    iex> {:ok, pid} = Slack.Bot.start_link(Slackjack.Bot, [], Application.get_env(:slackjack, :key))
+## Development
+
+- `cp config/dev.sample.exs config/dev.exs`
+- edit `config/dev.exs` to suit
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can

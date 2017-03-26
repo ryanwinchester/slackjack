@@ -85,6 +85,7 @@ defmodule Slackjack.Bot do
   Ignore message edit attachments.
   """
   def handle_event(%{subtype: "message_changed", message: %{attachments: _attachments}}, _slack, state) do
+    IO.puts "ATTACHMENT"
     {:ok, state}
   end
 
@@ -93,9 +94,11 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/message
   """
   def handle_event(message = %{subtype: "message_changed", channel: "C" <> _}, slack, state) do
+    IO.puts "EDIT"
+    IO.inspect message
     changeset =
       Message
-      |> Repo.get(message.id)
+      |> Repo.get!(message.previous_message.ts)
       |> Message.changeset(message)
     
     case Repo.update(changeset) do
@@ -109,6 +112,8 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/message
   """
   def handle_event(message = %{subtype: "message_deleted", channel: "C" <> _}, slack, state) do
+    IO.puts "DELETE"
+    IO.inspect message
     message = Repo.get(Message, message.id)
     
     case Repo.delete(message) do
@@ -122,8 +127,9 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/message
   """
   def handle_event(message = %{type: "message", channel: "C" <> _}, slack, state) do
-    # IO.inspect message
-    changeset = Message.changeset(%Message{}, message)
+    IO.puts "NEW"
+    IO.inspect message
+    changeset = Message.create_changeset(%Message{}, message)
     
     case Repo.insert(changeset) do
       {:ok, message} -> send_success(message, slack, state)

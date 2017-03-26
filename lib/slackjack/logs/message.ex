@@ -19,12 +19,22 @@ defmodule Slackjack.Logs.Message do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @required_fields ++ @optional_fields)
+  end
+
+  def create_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
     |> put_change(:id, params.ts)
     |> put_change(:channel_id, params.channel)
     |> put_change(:user_id, params.user)
-    |> validate_required(@required_fields)
     |> foreign_key_constraint(:channel_id)
     |> foreign_key_constraint(:user_id)
+    |> validate_required(@required_fields)
+  end
+
+  def update_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
   end
 
 end

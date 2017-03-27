@@ -12,7 +12,7 @@ defmodule Slackjack.Bot do
 
   alias Slackjack.Logs.Channel
   alias Slackjack.Logs.Message
-  alias Slackjack.Logs.User  
+  alias Slackjack.Logs.User
   alias Slackjack.Repo
 
   @test_channel Application.get_env(:slackjack, :test_channel)
@@ -100,7 +100,7 @@ defmodule Slackjack.Bot do
       Message
       |> Repo.get!(message.previous_message.ts)
       |> Message.changeset(message)
-    
+
     case Repo.update(changeset) do
       {:ok, message} -> send_success(message, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
@@ -115,11 +115,22 @@ defmodule Slackjack.Bot do
     IO.puts "DELETE"
     IO.inspect message
     message = Repo.get(Message, message.id)
-    
+
     case Repo.delete(message) do
       {:ok, message} -> send_success(message, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
     end
+  end
+
+  @doc """
+  A /me message was sent to a channel.
+  see: https://api.slack.com/events/message
+  """  
+  def handle_event(message = %{subtype: "me_message", channel: "C" <> _}, slack, state) do
+    message
+    |> Map.delete(:subtype)
+    |> Map.put(:text, "/me #{message.text}")
+    |> handle_event(slack, state)
   end
 
   @doc """
@@ -130,7 +141,7 @@ defmodule Slackjack.Bot do
     IO.puts "NEW"
     IO.inspect message
     changeset = Message.create_changeset(%Message{}, message)
-    
+
     case Repo.insert(changeset) do
       {:ok, message} -> send_success(message, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
@@ -173,7 +184,7 @@ defmodule Slackjack.Bot do
       User
       |> Repo.get(user.id)
       |> User.changeset(user)
-    
+
     case Repo.update(changeset) do
       {:ok, user} -> send_success(user, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
@@ -233,7 +244,7 @@ defmodule Slackjack.Bot do
           nil -> Channel.changeset(%Channel{}, slack_channel)
           _ -> Channel.changeset(channel, slack_channel)
         end
-        
+
       Repo.insert_or_update!(changeset)
     end)
   end
@@ -254,7 +265,7 @@ defmodule Slackjack.Bot do
           nil -> User.changeset(%User{}, slack_user)
           _ -> User.changeset(user, slack_user)
         end
-        
+
       Repo.insert_or_update!(changeset)
     end)
   end

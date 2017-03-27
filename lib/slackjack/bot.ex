@@ -12,7 +12,7 @@ defmodule Slackjack.Bot do
 
   alias Slackjack.Logs.Channel
   alias Slackjack.Logs.Message
-  alias Slackjack.Logs.User  
+  alias Slackjack.Logs.User
   alias Slackjack.Repo
 
   @test_channel Application.get_env(:slackjack, :test_channel)
@@ -118,6 +118,7 @@ defmodule Slackjack.Bot do
 
   @doc """
   A message was a `/me` action.
+  see: https://api.slack.com/events/message
   """
   def handle_event(message = %{subtype: "me_message", channel: "C" <> _}, slack, state) do
     message
@@ -132,7 +133,7 @@ defmodule Slackjack.Bot do
   """
   def handle_event(message = %{type: "message", channel: "C" <> _}, slack, state) do
     changeset = Message.create_changeset(%Message{}, message)
-    
+
     case Repo.insert(changeset) do
       {:ok, message} -> send_success(message, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
@@ -175,7 +176,7 @@ defmodule Slackjack.Bot do
       User
       |> Repo.get(user.id)
       |> User.changeset(user)
-    
+
     case Repo.update(changeset) do
       {:ok, user} -> send_success(user, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
@@ -235,7 +236,7 @@ defmodule Slackjack.Bot do
           nil -> Channel.changeset(%Channel{}, slack_channel)
           _ -> Channel.changeset(channel, slack_channel)
         end
-        
+
       Repo.insert_or_update!(changeset)
     end)
   end
@@ -256,7 +257,7 @@ defmodule Slackjack.Bot do
           nil -> User.changeset(%User{}, slack_user)
           _ -> User.changeset(user, slack_user)
         end
-        
+
       Repo.insert_or_update!(changeset)
     end)
   end

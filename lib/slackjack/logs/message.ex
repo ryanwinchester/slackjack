@@ -29,6 +29,7 @@ defmodule Slackjack.Logs.Message do
     |> put_change(:user_id, params.user)
     |> foreign_key_constraint(:channel_id)
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint(:id)
     |> validate_required(@required_fields)
   end
 

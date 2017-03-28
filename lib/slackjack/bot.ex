@@ -96,7 +96,7 @@ defmodule Slackjack.Bot do
       Message
       |> Repo.get!(event.previous_message.ts)
       |> Message.changeset(event.message)
-    
+
     case Repo.update(changeset) do
       {:ok, message} -> send_success(message, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
@@ -108,12 +108,14 @@ defmodule Slackjack.Bot do
   see: https://api.slack.com/events/message
   """
   def handle_event(message = %{subtype: "message_deleted", channel: "C" <> _}, slack, state) do
+    if message.deleted_ts != "" do
     message = Repo.get(Message, message.deleted_ts)
-    
+
     case Repo.delete(message) do
       {:ok, message} -> send_success(message, slack, state)
       {:error, changeset} -> send_error(changeset, slack, state)
     end
+  end
   end
 
   @doc """

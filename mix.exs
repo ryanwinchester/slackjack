@@ -44,7 +44,8 @@ defmodule Slackjack.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:postgrex, ">= 0.0.0"},
+    [{:ex_doc, ">= 0.0.0", only: :dev},
+     {:postgrex, ">= 0.0.0"},
      {:ecto, "~> 2.1"},
      {:poison, "~> 3.0"},
      {:distillery, "~> 1.0", runtime: false},

@@ -19,6 +19,19 @@ defmodule Slackjack.Mixfile do
      mod: {Slackjack.Application, []}]
   end
 
+  defp description do
+    """
+    Slack bot to log non-private team chat channels.
+    """
+  end
+
+  defp package do
+    [# These are the default files included in the package
+     maintainers: ["Ryan Winchester"],
+     licenses: ["Apache 2.0"],
+     links: %{"GitHub" => "https://github.com/ryanwinchester/slackjack"}]
+  end
+
   # Dependencies can be Hex packages:
   #
   #   {:my_dep, "~> 0.3.0"}
